@@ -10,12 +10,21 @@
 
 #include "stm32f1xx_hal.h"
 
+enum SSL_Status{
+	SSL_STATUS_OK = 0x01,
+	SSL_STATUS_RETRANSMIT = 0x02,
+	SSL_STATUS_TIMED_OUT = 0x03
+};
+
 struct controls {
-	uint8_t status; // 01 - ok, 02 - retransmit, 03 - timed out
+	enum SSL_Status status;
 	uint16_t ch1;
 	uint16_t ch2;
 	uint16_t ch3;
 	uint16_t ch4;
+	uint16_t valueCh[4];
+	uint8_t dataReady:1;
+	uint8_t dataAck:1;
 } control_data;
 
 void SSL_Init(UART_HandleTypeDef *huart);

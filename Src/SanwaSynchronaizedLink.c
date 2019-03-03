@@ -24,6 +24,7 @@ static uint16_t i;
 
 void SSL_Init(UART_HandleTypeDef *huart) {
 	ssl.huart = huart;
+	control_data.status = SSL_STATUS_TIMED_OUT;
 	HAL_UART_Receive_DMA(ssl.huart, rx_buffer, SSL_RX_BUFFER_LEN);
 }
 
@@ -32,18 +33,16 @@ void SSL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 	if (huart != ssl.huart) {
 		return;
 	}
-
+	uint8_t i;
 	Processed = rx_buffer;
 	while (!SSL_checkSum(Processed)) {
 		Processed = Processed + 1;
 	}
 
 	control_data.status = Processed[0];
-	control_data.ch1 = (Processed[1] << 8) + Processed[2];
-	control_data.ch2 = (Processed[3] << 8) + Processed[4];
-	control_data.ch3 = (Processed[5] << 8) + Processed[6];
-	control_data.ch4 = (Processed[7] << 8) + Processed[8];
-
+	for (i = 0; i < 4; i++) {
+		control_data.valueCh[i] = (Processed[i*2+1] << 8) + Processed[i*2+2];
+	}
 	HAL_UART_Receive_DMA(ssl.huart, rx_buffer, SSL_RX_BUFFER_LEN);
 }
 

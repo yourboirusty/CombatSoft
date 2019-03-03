@@ -27,7 +27,8 @@ void userMain() {
 
 	while (1) {
 		HAL_Delay(100);
-
+		printf("XD> %04d %04d %04d %04d\r\n", control_data.ch1,
+				control_data.ch2, control_data.ch3, control_data.ch4);
 		if (control_data.status == 3 || control_data.status == 0)
 			HAL_GPIO_WritePin(LED4_GPIO_Port, LED4_Pin, 0);
 		else {

@@ -18,10 +18,6 @@ enum SSL_Status{
 
 struct controls {
 	enum SSL_Status status;
-	uint16_t ch1;
-	uint16_t ch2;
-	uint16_t ch3;
-	uint16_t ch4;
 	uint16_t valueCh[4];
 	uint8_t dataReady:1;
 	uint8_t dataAck:1;

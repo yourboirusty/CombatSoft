@@ -19,8 +19,8 @@
 
 extern UART_HandleTypeDef huart1;
 extern DMA_HandleTypeDef hdma_usart1_rx;
-extern TIM_HandleTypeDef htim1;
 extern TIM_HandleTypeDef htim3;
+extern TIM_HandleTypeDef htim8;
 
 
 struct motorTb motorLeft;
@@ -96,7 +96,7 @@ void userMain() {
 
 	SSL_Init(&huart1);
 
-	pwmOut_Init(&BLCD, &htim1, TIM_CHANNEL_2, &TIM1->CCR2);
+	pwmOut_Init(&BLCD, &htim8, TIM_CHANNEL_1, &TIM8->CCR1);
 
 	//	motorTb_Init(&motorLeft, &htim3, &TIM3->CCR1, TIM_CHANNEL_1, ENG_L_DIRA_GPIO_Port, ENG_L_DIRA_Pin, ENG_L_DIRB_GPIO_Port, ENG_L_DIRB_Pin);
 //	motorTb_Init(&motorRight, &htim3, &TIM3->CCR2, TIM_CHANNEL_2,

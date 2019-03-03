@@ -88,10 +88,6 @@ void Error_Handler(void);
 #define LED3_GPIO_Port GPIOC
 #define LED4_Pin GPIO_PIN_0
 #define LED4_GPIO_Port GPIOD
-#define ADC_VOLTAGE_Pin GPIO_PIN_3
-#define ADC_VOLTAGE_GPIO_Port GPIOC
-#define PWMIN1_Pin GPIO_PIN_0
-#define PWMIN1_GPIO_Port GPIOA
 #define ENG3_PWM_Pin GPIO_PIN_0
 #define ENG3_PWM_GPIO_Port GPIOB
 #define IO1_Pin GPIO_PIN_1
@@ -106,12 +102,6 @@ void Error_Handler(void);
 #define IO4_GPIO_Port GPIOB
 #define IO3_Pin GPIO_PIN_15
 #define IO3_GPIO_Port GPIOB
-#define PWMIN2_Pin GPIO_PIN_6
-#define PWMIN2_GPIO_Port GPIOC
-#define PPM_PWMIN3_Pin GPIO_PIN_8
-#define PPM_PWMIN3_GPIO_Port GPIOA
-#define PWMIN4_Pin GPIO_PIN_15
-#define PWMIN4_GPIO_Port GPIOA
 #define ENG_L_DIRA_Pin GPIO_PIN_2
 #define ENG_L_DIRA_GPIO_Port GPIOD
 #define ENG_L_DIRB_Pin GPIO_PIN_3

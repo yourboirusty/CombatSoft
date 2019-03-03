@@ -21,7 +21,6 @@ __IO uint32_t* pwmOutputReg, uint32_t channel, GPIO_TypeDef* dirForward_Port,
 	mTb->dirBackward_Pin = dirBackward_Pin;
 	mTb->dirBackward_Port = dirBackward_Port;
 
-
 	HAL_TIM_PWM_Start(mTb->htim, mTb->channel);
 
 	motorTb_Write(mTb, 0);
@@ -40,5 +39,4 @@ void motorTb_Write(struct motorTb* mTb, int16_t power) {
 	}
 
 	*mTb->pwmOutputReg = abs(power);
-
 }

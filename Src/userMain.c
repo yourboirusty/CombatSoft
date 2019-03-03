@@ -27,7 +27,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 	SSL_UART_RxCpltCallback(huart);
 }
 
-int16_t parse_raw_stick(int16_t input) {
+int16_t liczenie_kola(int16_t input) {
 	int16_t output = (double) 1.57 * (input - 1024);
 
 	if (output > 1000) {
@@ -41,11 +41,61 @@ int16_t parse_raw_stick(int16_t input) {
 	return output;
 }
 
+int16_t liczenie_gazu(int16_t input) {
+	//	int16_t output = (double) 1.57 * (input - 1024);
+	int16_t output = (double) 1.22 * (input - 776);
+
+	if (output > 1000) {
+		output = 1000;
+	}
+
+	if (output < -1000) {
+		output = -1000;
+	}
+
+	return output;
+}
+
+void MC_basic(int16_t stickX, int16_t stickY, int16_t* driveL, int16_t* driveR) {
+	// temporary variables definition
+	int16_t motorL = 0;
+	int16_t motorR = 0;
+
+	// algorithm BEGIN
+
+	motorL = stickY + stickX;
+	motorR = stickY - stickX;
+
+	if (motorL > 1000)
+		motorL = 1000;
+	if (motorR > 1000)
+		motorR = 1000;
+
+	if (motorL < -1000)
+		motorL = -1000;
+	if (motorR < -1000)
+		motorR = -1000;
+
+//	motorL = motorL *3/5;
+//	motorR = motorR *3/5;
+
+// algorithm END
+
+	// pass computed values as output
+	*driveL = motorL;
+	*driveR = motorR;
+}
+
 void userMain() {
+
+	int16_t mocL, mocR;
+
 	SSL_Init(&huart1);
 //
 //	motorTb_Init(&motorLeft, &htim3, &TIM3->CCR1, TIM_CHANNEL_1, ENG_L_DIRA_GPIO_Port, ENG_L_DIRA_Pin, ENG_L_DIRB_GPIO_Port, ENG_L_DIRB_Pin);
-	motorTb_Init(&motorRight, &htim3, &TIM3->CCR2, TIM_CHANNEL_2, ENG_R_DIRA_GPIO_Port, ENG_R_DIRA_Pin, ENG_R_DIRB_GPIO_Port, ENG_R_DIRB_Pin);
+	motorTb_Init(&motorRight, &htim3, &TIM3->CCR2, TIM_CHANNEL_2,
+	ENG_R_DIRA_GPIO_Port, ENG_R_DIRA_Pin, ENG_R_DIRB_GPIO_Port,
+	ENG_R_DIRB_Pin);
 
 	int16_t kolo;
 	int16_t gaz;
@@ -60,7 +110,8 @@ void userMain() {
 			HAL_GPIO_WritePin(LED4_GPIO_Port, LED4_Pin, 0);
 		}
 
-		kolo = parse_raw_stick(control_data.valueCh[0]);
+		kolo = liczenie_kola(control_data.valueCh[0]);
+		gaz = liczenie_gazu(control_data.valueCh[1]);
 
 		if (kolo > 500)
 			HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, 1);
@@ -72,7 +123,9 @@ void userMain() {
 		else
 			HAL_GPIO_WritePin(LED2_GPIO_Port, LED2_Pin, 0);
 
+		MC_basic(kolo, gaz, &mocL, &mocR);
 
-		motorTb_Write(&motorRight, kolo);
+		motorTb_Write(&motorLeft, mocL);
+		motorTb_Write(&motorRight, mocR);
 	}
 }

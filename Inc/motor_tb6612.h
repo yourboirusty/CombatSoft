@@ -13,6 +13,7 @@
 struct motorTb {
 	TIM_HandleTypeDef* htim;
 	uint32_t channel;
+	__IO uint32_t* pwmOutputReg;
 	GPIO_TypeDef* dirForward_Port;
 	uint16_t dirForward_Pin;
 	GPIO_TypeDef* dirBackward_Port;
@@ -20,7 +21,7 @@ struct motorTb {
 };
 
 void motorTb_Init(struct motorTb* mTb, TIM_HandleTypeDef* htim,
-		uint32_t channel, GPIO_TypeDef* dirForward_Port,
+__IO uint32_t* pwmOutputReg, uint32_t channel, GPIO_TypeDef* dirForward_Port,
 		uint16_t dirForward_Pin, GPIO_TypeDef* dirBackward_Port,
 		uint16_t dirBackward_Pin);
 

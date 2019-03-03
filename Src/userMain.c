@@ -28,17 +28,17 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 }
 
 int16_t parse_raw_stick(int16_t input) {
-	input = (double) 1.57 * (input - 1024);
+	int16_t output = (double) 1.57 * (input - 1024);
 
-	if (input > 1000) {
-		input = 1000;
+	if (output > 1000) {
+		output = 1000;
 	}
 
-	if (input < -1000) {
-		input = -1000;
+	if (output < -1000) {
+		output = -1000;
 	}
 
-	return input;
+	return output;
 }
 
 void userMain() {
@@ -48,6 +48,7 @@ void userMain() {
 	motorTb_Init(&motorRight, &htim3, &TIM3->CCR2, TIM_CHANNEL_2, ENG_R_DIRA_GPIO_Port, ENG_R_DIRA_Pin, ENG_R_DIRB_GPIO_Port, ENG_R_DIRB_Pin);
 
 	int16_t kolo;
+	int16_t gaz;
 
 	while (1) {
 		HAL_Delay(100);

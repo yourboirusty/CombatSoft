@@ -14,9 +14,14 @@
 #include "main.h"
 
 #include "SanwaSynchronaizedLink.h"
+#include "motor_tb6612.h"
 
 extern UART_HandleTypeDef huart1;
 extern DMA_HandleTypeDef hdma_usart1_rx;
+extern TIM_HandleTypeDef htim3;
+
+struct motorTb motorLeft;
+struct motorTb motorRight;
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 	SSL_UART_RxCpltCallback(huart);
@@ -39,11 +44,13 @@ int16_t parse_raw_stick(int16_t input) {
 void userMain() {
 	SSL_Init(&huart1);
 
+//	motorTb_Init(&motorLeft, &htim3, NULL, NULL, NULL, NULL, NULL);
+//	motorTb_Init(&motorRight, &htim3, NULL, NULL, NULL, NULL, NULL);
+
 	int16_t kolo;
 
 	while (1) {
 		HAL_Delay(100);
-
 
 		// does radio work?
 		if (control_data.status == SSL_STATUS_OK) {

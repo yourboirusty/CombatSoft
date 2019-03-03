@@ -44,8 +44,8 @@ int16_t parse_raw_stick(int16_t input) {
 void userMain() {
 	SSL_Init(&huart1);
 //
-	motorTb_Init(&motorLeft, &htim3, &TIM3->CCR1, TIM_CHANNEL_1, ENG_L_DIRA_GPIO_Port, ENG_L_DIRA_Pin, ENG_L_DIRB_GPIO_Port, ENG_L_DIRB_Pin);
-//	motorTb_Init(&motorRight, &htim3, &TIM3->CCR2, TIM_CHANNEL_2, ENG_R_DIRA_GPIO_Port, ENG_R_DIRA_Pin, ENG_R_DIRB_GPIO_Port, ENG_R_DIRB_Pin);
+//	motorTb_Init(&motorLeft, &htim3, &TIM3->CCR1, TIM_CHANNEL_1, ENG_L_DIRA_GPIO_Port, ENG_L_DIRA_Pin, ENG_L_DIRB_GPIO_Port, ENG_L_DIRB_Pin);
+	motorTb_Init(&motorRight, &htim3, &TIM3->CCR2, TIM_CHANNEL_2, ENG_R_DIRA_GPIO_Port, ENG_R_DIRA_Pin, ENG_R_DIRB_GPIO_Port, ENG_R_DIRB_Pin);
 
 	int16_t kolo;
 
@@ -72,6 +72,6 @@ void userMain() {
 			HAL_GPIO_WritePin(LED2_GPIO_Port, LED2_Pin, 0);
 
 
-		motorTb_Write(&motorLeft, kolo);
+		motorTb_Write(&motorRight, kolo);
 	}
 }

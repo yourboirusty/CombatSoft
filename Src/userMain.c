@@ -135,7 +135,7 @@ void userMain() {
 
 		MC_basic(kolo, gaz, &mocL, &mocR);
 
-//		pwmOut_WriteMotor(&BLCD, )
+		pwmOut_WriteMotor(&BLCD, abs(kolo));
 
 //		motorTb_Write(&motorLeft, mocL);
 //		motorTb_Write(&motorRight, mocR);

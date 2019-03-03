@@ -19,5 +19,13 @@ void pwmOut_Init(struct pwmOutput* pwmOut, TIM_HandleTypeDef* htim,
 }
 
 void pwmOut_WriteMotor(struct pwmOutput* pwmOut, uint16_t value) {
-	*pwmOut->pwmOutputReg = 100;
+	uint32_t output;
+
+	// 1000 = 1ms
+
+	output = value + 1500;
+
+	output = output*5/2;
+
+	*pwmOut->pwmOutputReg = output;
 }

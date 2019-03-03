@@ -34,9 +34,12 @@ void SSL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 		return;
 	}
 	uint8_t i;
+
 	Processed = rx_buffer;
-	while (!SSL_checkSum(Processed)) {
+	i=0;
+	while (!SSL_checkSum(Processed) && i<10) {
 		Processed = Processed + 1;
+		i++;
 	}
 
 	control_data.status = Processed[0];

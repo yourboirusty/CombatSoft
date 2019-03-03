@@ -22,12 +22,13 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 	SSL_UART_RxCpltCallback(huart);
 }
 
-int8_t parse_raw_stick(int16_t input) {
-	input = (input - 1024) * 1.57;
+int16_t parse_raw_stick(int16_t input) {
+	input = (double) 1.57 * (input - 1024);
 
 	if (input > 1000) {
 		input = 1000;
 	}
+
 	if (input < -1000) {
 		input = -1000;
 	}

@@ -15,13 +15,17 @@
 
 #include "SanwaSynchronaizedLink.h"
 #include "motor_tb6612.h"
+#include "pwmOutput.h"
 
 extern UART_HandleTypeDef huart1;
 extern DMA_HandleTypeDef hdma_usart1_rx;
+extern TIM_HandleTypeDef htim1;
 extern TIM_HandleTypeDef htim3;
+
 
 struct motorTb motorLeft;
 struct motorTb motorRight;
+struct pwmOutput BLCD;
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 	SSL_UART_RxCpltCallback(huart);
@@ -91,11 +95,13 @@ void userMain() {
 	int16_t mocL, mocR;
 
 	SSL_Init(&huart1);
-//
-//	motorTb_Init(&motorLeft, &htim3, &TIM3->CCR1, TIM_CHANNEL_1, ENG_L_DIRA_GPIO_Port, ENG_L_DIRA_Pin, ENG_L_DIRB_GPIO_Port, ENG_L_DIRB_Pin);
-	motorTb_Init(&motorRight, &htim3, &TIM3->CCR2, TIM_CHANNEL_2,
-	ENG_R_DIRA_GPIO_Port, ENG_R_DIRA_Pin, ENG_R_DIRB_GPIO_Port,
-	ENG_R_DIRB_Pin);
+
+	pwmOut_Init(&BLCD, &htim1, TIM_CHANNEL_2, &TIM1->CCR2);
+
+	//	motorTb_Init(&motorLeft, &htim3, &TIM3->CCR1, TIM_CHANNEL_1, ENG_L_DIRA_GPIO_Port, ENG_L_DIRA_Pin, ENG_L_DIRB_GPIO_Port, ENG_L_DIRB_Pin);
+//	motorTb_Init(&motorRight, &htim3, &TIM3->CCR2, TIM_CHANNEL_2,
+//	ENG_R_DIRA_GPIO_Port, ENG_R_DIRA_Pin, ENG_R_DIRB_GPIO_Port,
+//	ENG_R_DIRB_Pin);
 
 	int16_t kolo;
 	int16_t gaz;
@@ -123,9 +129,15 @@ void userMain() {
 		else
 			HAL_GPIO_WritePin(LED2_GPIO_Port, LED2_Pin, 0);
 
+		HAL_GPIO_TogglePin(LED3_GPIO_Port, LED3_Pin);
+		HAL_Delay(5);
+		HAL_GPIO_TogglePin(LED3_GPIO_Port, LED3_Pin);
+
 		MC_basic(kolo, gaz, &mocL, &mocR);
 
-		motorTb_Write(&motorLeft, mocL);
-		motorTb_Write(&motorRight, mocR);
+//		pwmOut_WriteMotor(&BLCD, )
+
+//		motorTb_Write(&motorLeft, mocL);
+//		motorTb_Write(&motorRight, mocR);
 	}
 }

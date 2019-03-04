@@ -99,6 +99,21 @@ void MC_basic(int16_t stickX, int16_t stickY, int16_t* driveL, int16_t* driveR) 
 	*driveR = motorR;
 }
 
+void radioLinkTimeOut(enum SSL_Status status) {
+	static uint32_t last = 0;
+	uint32_t deltaT;
+
+	if (status == SSL_STATUS_OK) {
+		last = HAL_GetTick();
+	}
+
+	deltaT = HAL_GetTick() - last;
+
+	if (deltaT > 100) {
+		panic();
+	}
+}
+
 void userMain() {
 
 	int16_t mocL, mocR;
@@ -126,6 +141,8 @@ void userMain() {
 			panic();
 			continue;
 		}
+
+		radioLinkTimeOut(control_data.status);
 
 		// led on if radio works
 		if (control_data.status == SSL_STATUS_OK) {

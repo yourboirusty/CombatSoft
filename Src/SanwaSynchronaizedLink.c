@@ -34,6 +34,7 @@ void SSL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 		return;
 	}
 	uint8_t i;
+	control_data.last_data = HAL_GetTick();
 	Processed = rx_buffer;
 	while (!SSL_checkSum(Processed)) {
 		Processed = Processed + 1;

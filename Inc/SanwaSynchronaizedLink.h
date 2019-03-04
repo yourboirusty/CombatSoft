@@ -21,6 +21,7 @@ struct controls {
 	uint16_t valueCh[4];
 	uint8_t dataReady:1;
 	uint8_t dataAck:1;
+	uint32_t last_data;
 } control_data;
 
 void SSL_Init(UART_HandleTypeDef *huart);

@@ -13,9 +13,10 @@ void pwmOut_Init(struct pwmOutput* pwmOut, TIM_HandleTypeDef* htim,
 	pwmOut->htim = htim;
 	pwmOut->channel = channel;
 	pwmOut->pwmOutputReg = pwmOutputReg;
-	pwmOut_WriteMotor(pwmOut, 0);
 
 	HAL_TIM_PWM_Start(pwmOut->htim, pwmOut->channel);
+	pwmOut_WriteMotor(pwmOut, 0);
+
 }
 
 void pwmOut_WriteMotor(struct pwmOutput* pwmOut, uint16_t value) {

@@ -20,7 +20,7 @@
 extern UART_HandleTypeDef huart1;
 extern DMA_HandleTypeDef hdma_usart1_rx;
 extern TIM_HandleTypeDef htim3;
-extern TIM_HandleTypeDef htim8;
+extern TIM_HandleTypeDef htim15;
 
 
 struct motorTb motorLeft;
@@ -96,26 +96,37 @@ void userMain() {
 
 	SSL_Init(&huart1);
 
-	pwmOut_Init(&BLCD, &htim8, TIM_CHANNEL_1, &TIM8->CCR1);
+	pwmOut_Init(&BLCD, &htim15, TIM_CHANNEL_1, &TIM15->CCR1);
+	pwmOut_WriteMotor(&BLCD, 0);
 
-	//	motorTb_Init(&motorLeft, &htim3, &TIM3->CCR1, TIM_CHANNEL_1, ENG_L_DIRA_GPIO_Port, ENG_L_DIRA_Pin, ENG_L_DIRB_GPIO_Port, ENG_L_DIRB_Pin);
-//	motorTb_Init(&motorRight, &htim3, &TIM3->CCR2, TIM_CHANNEL_2,
-//	ENG_R_DIRA_GPIO_Port, ENG_R_DIRA_Pin, ENG_R_DIRB_GPIO_Port,
-//	ENG_R_DIRB_Pin);
+	//	motorTb_Init(&motorLeft, &htim3, &TIM3->CCR1, TIM_CHANNEL_1,
+	//	ENG_L_DIRA_GPIO_Port, ENG_L_DIRA_Pin, ENG_L_DIRB_GPIO_Port,
+	//	ENG_L_DIRB_Pin);
+	//	motorTb_Init(&motorRight, &htim3, &TIM3->CCR2, TIM_CHANNEL_2,
+	//	ENG_R_DIRA_GPIO_Port, ENG_R_DIRA_Pin, ENG_R_DIRB_GPIO_Port,
+	//	ENG_R_DIRB_Pin);
 
 	int16_t kolo;
 	int16_t gaz;
 
 	while (1) {
 		HAL_Delay(100);
+		HAL_GPIO_TogglePin(LED4_GPIO_Port, LED4_Pin);
+		HAL_Delay(5);
+		HAL_GPIO_TogglePin(LED4_GPIO_Port, LED4_Pin);
 
 		// does radio work?
 		if (control_data.status == SSL_STATUS_OK) {
 			HAL_GPIO_WritePin(LED4_GPIO_Port, LED4_Pin, 1);
+
+
+
 		} else {
 			HAL_GPIO_WritePin(LED4_GPIO_Port, LED4_Pin, 0);
+//			motorWrite(&motorLeft, 0);
+//			motorWrite(&motorRight, 0);
+//			pwmOut_WriteMotor(&BLCD, 0);
 		}
-
 		kolo = liczenie_kola(control_data.valueCh[0]);
 		gaz = liczenie_gazu(control_data.valueCh[1]);
 
@@ -129,13 +140,11 @@ void userMain() {
 		else
 			HAL_GPIO_WritePin(LED2_GPIO_Port, LED2_Pin, 0);
 
-		HAL_GPIO_TogglePin(LED3_GPIO_Port, LED3_Pin);
-		HAL_Delay(5);
-		HAL_GPIO_TogglePin(LED3_GPIO_Port, LED3_Pin);
+
 
 		MC_basic(kolo, gaz, &mocL, &mocR);
 
-		pwmOut_WriteMotor(&BLCD, abs(kolo));
+		//pwmOut_WriteMotor(&BLCD, abs(kolo));
 
 //		motorTb_Write(&motorLeft, mocL);
 //		motorTb_Write(&motorRight, mocR);

@@ -22,7 +22,8 @@ extern DMA_HandleTypeDef hdma_usart1_rx;
 extern TIM_HandleTypeDef htim3;
 extern TIM_HandleTypeDef htim15;
 
-
+int16_t gaz;
+int16_t kolo;
 struct motorTb motorLeft;
 struct motorTb motorRight;
 struct pwmOutput BLCD;
@@ -97,7 +98,7 @@ void userMain() {
 	SSL_Init(&huart1);
 
 	pwmOut_Init(&BLCD, &htim15, TIM_CHANNEL_1, &TIM15->CCR1);
-	pwmOut_WriteMotor(&BLCD, 0);
+	pwmOut_WriteMotor(&BLCD, 1000);
 
 	//	motorTb_Init(&motorLeft, &htim3, &TIM3->CCR1, TIM_CHANNEL_1,
 	//	ENG_L_DIRA_GPIO_Port, ENG_L_DIRA_Pin, ENG_L_DIRB_GPIO_Port,
@@ -106,8 +107,7 @@ void userMain() {
 	//	ENG_R_DIRA_GPIO_Port, ENG_R_DIRA_Pin, ENG_R_DIRB_GPIO_Port,
 	//	ENG_R_DIRB_Pin);
 
-	int16_t kolo;
-	int16_t gaz;
+
 
 	while (1) {
 		HAL_Delay(100);
@@ -144,7 +144,7 @@ void userMain() {
 
 		MC_basic(kolo, gaz, &mocL, &mocR);
 
-		//pwmOut_WriteMotor(&BLCD, abs(kolo));
+		pwmOut_WriteMotor(&BLCD, abs(kolo));
 
 //		motorTb_Write(&motorLeft, mocL);
 //		motorTb_Write(&motorRight, mocR);

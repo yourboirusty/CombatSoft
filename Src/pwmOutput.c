@@ -24,7 +24,7 @@ void pwmOut_WriteMotor(struct pwmOutput* pwmOut, uint16_t value) {
 
 	// 1000 = 1ms
 
-	output = value + 1500;
+	output = value + 1000;
 
 	output = output*5/2;
 

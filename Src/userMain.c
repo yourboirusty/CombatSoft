@@ -9,6 +9,8 @@
 
 #include "stm32f1xx_hal.h"
 
+#include <stdlib.h>
+
 #include "utility.h"
 
 #include "main.h"
@@ -26,10 +28,16 @@ int16_t gaz;
 int16_t kolo;
 struct motorTb motorLeft;
 struct motorTb motorRight;
-struct pwmOutput BLCD;
+struct pwmOutput BLDC;
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 	SSL_UART_RxCpltCallback(huart);
+}
+
+void panic() {
+	motorTb_Write(&motorLeft, 0);
+	motorTb_Write(&motorRight, 0);
+	pwmOut_WriteMotor(&BLDC, 0);
 }
 
 int16_t liczenie_kola(int16_t input) {
@@ -86,7 +94,7 @@ void MC_basic(int16_t stickX, int16_t stickY, int16_t* driveL, int16_t* driveR) 
 
 // algorithm END
 
-	// pass computed values as output
+// pass computed values as output
 	*driveL = motorL;
 	*driveR = motorR;
 }
@@ -97,8 +105,8 @@ void userMain() {
 
 	SSL_Init(&huart1);
 
-	pwmOut_Init(&BLCD, &htim15, TIM_CHANNEL_1, &TIM15->CCR1);
-	pwmOut_WriteMotor(&BLCD, 1000);
+	pwmOut_Init(&BLDC, &htim15, TIM_CHANNEL_1, &TIM15->CCR1);
+	pwmOut_WriteMotor(&BLDC, 1000);
 
 	//	motorTb_Init(&motorLeft, &htim3, &TIM3->CCR1, TIM_CHANNEL_1,
 	//	ENG_L_DIRA_GPIO_Port, ENG_L_DIRA_Pin, ENG_L_DIRB_GPIO_Port,
@@ -107,26 +115,25 @@ void userMain() {
 	//	ENG_R_DIRA_GPIO_Port, ENG_R_DIRA_Pin, ENG_R_DIRB_GPIO_Port,
 	//	ENG_R_DIRB_Pin);
 
-
-
 	while (1) {
 		HAL_Delay(100);
 		HAL_GPIO_TogglePin(LED4_GPIO_Port, LED4_Pin);
 		HAL_Delay(5);
 		HAL_GPIO_TogglePin(LED4_GPIO_Port, LED4_Pin);
 
-		// does radio work?
+		// panic if timed out
+		if (control_data.status == SSL_STATUS_TIMED_OUT) {
+			panic();
+			continue;
+		}
+
+		// led on if radio works
 		if (control_data.status == SSL_STATUS_OK) {
 			HAL_GPIO_WritePin(LED4_GPIO_Port, LED4_Pin, 1);
-
-
-
 		} else {
 			HAL_GPIO_WritePin(LED4_GPIO_Port, LED4_Pin, 0);
-//			motorWrite(&motorLeft, 0);
-//			motorWrite(&motorRight, 0);
-//			pwmOut_WriteMotor(&BLCD, 0);
 		}
+
 		kolo = liczenie_kola(control_data.valueCh[0]);
 		gaz = liczenie_gazu(control_data.valueCh[1]);
 
@@ -140,11 +147,9 @@ void userMain() {
 		else
 			HAL_GPIO_WritePin(LED2_GPIO_Port, LED2_Pin, 0);
 
-
-
 		MC_basic(kolo, gaz, &mocL, &mocR);
 
-		pwmOut_WriteMotor(&BLCD, abs(kolo));
+		pwmOut_WriteMotor(&BLDC, abs(kolo));
 
 //		motorTb_Write(&motorLeft, mocL);
 //		motorTb_Write(&motorRight, mocR);
